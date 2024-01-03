@@ -7,9 +7,16 @@ import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../../../API";
 const TopStories = () => {
   const [title, setTitle] = useState("");
+  const [type, setType] = useState("img");
   const [Topic, setTopic] = useState("");
+  const [category, setCategory] = useState("");
+  const [subcategory, setSubcategory] = useState("");
+  const [categoryData, setCategoryData] = useState([]);
+  const [userCategoryOptions, setUserCategoryOptions] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
   const [desc, setdesc] = useState("");
   const [reported, setreported] = useState("");
+  const [role, setRole] = useState("");
   const [publish, setpublish] = useState("");
   const [Language, setLanguage] = useState("English");
   const [newType, setNewType] = useState("topStories");
@@ -21,6 +28,37 @@ const TopStories = () => {
   const { onEdit, setOnEdit, id } = useContext(onEditContext);
   const [Update, setUpdate] = useState(false);
   const navigation = useNavigate();
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/user?id=${localStorage.getItem("id")}`)
+      .then((user) => {
+        console.log(user);
+        setpublish(user.data[0].email);
+        setCategoryData(user.data[0].acsses);
+        console.log(user?.data[0]?.acsses);
+        setRole(user.data[0].role);
+        setUserCategoryOptions(user?.data[0]?.selectedKeywords || []);
+        console.log(userCategoryOptions);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    console.log(categoryData);
+    axios.get(`${API_URL}/subcategory?category=${Topic}`).then((content) => {
+      let arr = [];
+      for (let i = 0; i < content.data.length; i++) {
+        const element = content.data[i];
+        arr.push({
+          key: element._id,
+          value: element.text,
+          label: element.text,
+        });
+      }
+      setCategoryOptions(arr);
+    });
+  }, []);
+
+  console.log(categoryOptions);
 
   useEffect(() => {
     console.log(id, "id");
@@ -80,6 +118,9 @@ const TopStories = () => {
           publishBy: publish,
           newsType: newType,
           image: image.data.image,
+          type: type,
+          category: category, // Include category
+          subcategory: subcategory, // Include subcategory
         })
         .then((data) => {
           console.log(data.data);
@@ -237,7 +278,7 @@ const TopStories = () => {
                         overflow: "hidden",
                       }}
                     >
-                      Upload image here
+                      Upload Image or Video here
                     </div>
                   ) : (
                     <img
@@ -273,23 +314,26 @@ const TopStories = () => {
               <Col span={18}>
                 <Row gutter={20}>
                   <Col span={12}>
-                    <Input
-                      placeholder="Topic"
-                      value={Topic}
-                      onChange={(e) => setTopic(e.target.value)}
+                    <Select
+                      placeholder="Select Type"
+                      onChange={(e) => setType(e)}
+                      value={type}
+                      style={{
+                        width: "100%",
+                        marginBottom: "20px",
+                      }}
+                      options={[
+                        {
+                          value: "img",
+                          label: "Image",
+                        },
+                        {
+                          value: "vid",
+                          label: "Video",
+                        },
+                      ]}
                     />
                   </Col>
-                  {/* Fourth column - 50% width */}
-                  <Col span={12}>
-                    <Input
-                      placeholder="Headline"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                    />
-                    <div style={{ marginBottom: "20px" }}></div>
-                  </Col>
-
-                  {/* Third column - 50% width */}
                   <Col span={12}>
                     <Select
                       placeholder="Select Language"
@@ -315,6 +359,53 @@ const TopStories = () => {
                       ]}
                     />
                   </Col>
+                  <Col span={24}>
+                    <Input
+                      placeholder="Headline"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                    <div style={{ marginBottom: "20px" }}></div>
+                  </Col>
+                  <Col span={12}>
+                    <Select
+                      value={Topic ? Topic : null}
+                      placeholder="Category"
+                      onChange={(e) => setTopic(e)}
+                      style={{
+                        width: "100%",
+                      }}
+                      options={userCategoryOptions.map((category) => ({
+                        value: category,
+                        label: category,
+                      }))}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Select
+                      placeholder="Sub Category"
+                      onChange={(e) => setSubcategory(e)} // Set subcategory, not category
+                      value={subcategory}
+                      style={{
+                        width: "100%",
+                        marginBottom: "20px",
+                      }}
+                      options={categoryOptions.map((option) => ({
+                        value: option.value,
+                        label: option.label,
+                      }))}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      placeholder="Topic"
+                      value={Topic}
+                      onChange={(e) => setTopic(e.target.value)}
+                    />
+                  </Col>
+                  {/* Fourth column - 50% width */}
+
+                  {/* Third column - 50% width */}
                 </Row>
 
                 {/* Fifth column - 75% width, in the same line */}

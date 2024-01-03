@@ -7,9 +7,19 @@ import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../../../API";
 const BreakingNews = () => {
   const [title, setTitle] = useState("");
+  const [type, setType] = useState("img");
   const [Topic, setTopic] = useState("");
   const [desc, setdesc] = useState("");
   const [reported, setreported] = useState("");
+  const [subCategory, setSubCategory] = useState("");
+  const [role, setRole] = useState("");
+  const [subCategoryData, setSubCategoryData] = useState("");
+  const [categoryData, setCategoryData] = useState([]);
+  const [usercategoryData, setuserCategoryData] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [userCategoryOptions, setUserCategoryOptions] = useState([]);
+  const [admincategoryData, setadminCategoryData] = useState([]);
+  const [subcategory, setSubcategory] = useState("");
   const [publish, setpublish] = useState("");
   const [Language, setLanguage] = useState("English");
   const [newType, setNewType] = useState("breakingNews");
@@ -23,6 +33,33 @@ const BreakingNews = () => {
   const navigation = useNavigate();
 
   useEffect(() => {
+    axios
+      .get(`${API_URL}/user?id=${localStorage.getItem("id")}`)
+      .then((user) => {
+        console.log(user);
+        setpublish(user.data[0].email);
+        setCategoryData(user.data[0].acsses);
+        console.log(user?.data[0]?.acsses);
+        setRole(user.data[0].role);
+        setUserCategoryOptions(user?.data[0]?.selectedKeywords || []);
+        console.log(userCategoryOptions);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    axios.get(`${API_URL}/subcategory?category=${Topic}`).then((content) => {
+      let arr = [];
+      for (let i = 0; i < content.data.length; i++) {
+        const element = content.data[i];
+        arr.push({
+          key: element._id,
+          value: element.text,
+          label: element.text,
+        });
+      }
+      setCategoryOptions(arr);
+    });
+    console.log(categoryData);
     console.log(id, "id");
     console.log(onEdit, "onEdit");
     if (onEdit) {
@@ -272,21 +309,28 @@ const BreakingNews = () => {
               {/* Third and Fourth columns - 75% width */}
               <Col span={18}>
                 <Row gutter={20}>
-                  {/* Third column - 50% width */}
                   <Col span={12}>
-                    <Input
-                      placeholder="Headline"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                    />
-                    <div style={{ marginBottom: "20px" }}></div>
-                  </Col>
-                  {/* Fourth column - 50% width */}
-                  <Col span={12}>
-                    <Input
-                      placeholder="Topic"
-                      value={Topic}
-                      onChange={(e) => setTopic(e.target.value)}
+                    <Select
+                      // onChange={(e) => setValue(e)}
+                      placeholder="Select Language"
+                      onChange={(e) => setType(e)}
+                      defaultValue="img"
+                      value={type}
+                      style={{
+                        width: "100%",
+                        // height: 50,
+                        marginBottom: "20px",
+                      }}
+                      options={[
+                        {
+                          value: "img",
+                          label: "Image",
+                        },
+                        {
+                          value: "vid",
+                          label: "Video",
+                        },
+                      ]}
                     />
                   </Col>
                   <Col span={12}>
@@ -314,6 +358,52 @@ const BreakingNews = () => {
                           label: "Hindi",
                         },
                       ]}
+                    />
+                  </Col>
+                  {/* Third column - 50% width */}
+                  <Col span={24}>
+                    <Input
+                      placeholder="Headline"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                    <div style={{ marginBottom: "20px" }}></div>
+                  </Col>
+                  <Col span={12}>
+                    <Select
+                      value={Topic ? Topic : null}
+                      placeholder="Category"
+                      onChange={(e) => setTopic(e)}
+                      style={{
+                        width: "100%",
+                      }}
+                      options={userCategoryOptions.map((category) => ({
+                        value: category,
+                        label: category,
+                      }))}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Select
+                      placeholder="Sub Category"
+                      onChange={(value) => setSubcategory(value)}
+                      value={subcategory}
+                      style={{
+                        width: "100%",
+                        marginBottom: "20px",
+                      }}
+                      options={categoryOptions.map((option) => ({
+                        value: option.value,
+                        label: option.label,
+                      }))}
+                    />
+                  </Col>
+
+                  <Col span={12}>
+                    <Input
+                      placeholder="Topic"
+                      value={Topic}
+                      onChange={(e) => setTopic(e.target.value)}
                     />
                   </Col>
                 </Row>

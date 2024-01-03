@@ -82,6 +82,17 @@ const AdminLayout = () => {
       <Sider style={siderStyle2}></Sider>
       <Content style={contentStyle}>
         <Routes>
+          <Route
+            path="dashboard/upload"
+            element={
+              // Only allow access if the query parameter "edit" is set to "true"
+              location.search.includes("edit=true") ? (
+                <Upload />
+              ) : (
+                <div style={{ color: "black" }}>No Access</div>
+              )
+            }
+          />
           <Route path={"dashboard"} element={<Dashboard />} />
           {access.map((path) => {
             switch (path) {

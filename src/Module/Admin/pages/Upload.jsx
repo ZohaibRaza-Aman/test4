@@ -27,7 +27,7 @@ const Upload = () => {
   const [publish, setpublish] = useState("");
   const [type, setType] = useState("img");
   const [Language, setLanguage] = useState("English");
-  const [newType, setNewType] = useState("breakingNews");
+  const [newType, setNewType] = useState("upload");
   const [keyword, setkeyword] = useState([]);
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
   const [img, setImg] = useState(null);
@@ -70,7 +70,7 @@ const Upload = () => {
   }));
 
   useEffect(() => {
-    setSlug(title);
+    setSlug(slug);
     console.log(id, "id");
     console.log(onEdit, "onEdit");
     if (onEdit) {
@@ -192,6 +192,7 @@ const Upload = () => {
           image: image.data.image,
           type: type,
           subCategory: subCategory,
+          slug: slug,
         })
         .then((data) => {
           console.log(data.data);
@@ -743,7 +744,7 @@ const Upload = () => {
               <Col span={6}>
                 <Input
                   placeholder="Slug"
-                  value={title}
+                  value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                 />
                 <div style={{ marginBottom: "20px" }}></div>

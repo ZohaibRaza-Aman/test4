@@ -9,7 +9,7 @@ const VisualStories = () => {
   const [title, setTitle] = useState("");
   const [story, setStory] = useState("");
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
-  const [img, setImg] = useState(null);
+  const [images, setImages] = useState([]);
 
   const showVerifyModal = () => {
     setIsVerifyModalOpen(true);
@@ -22,16 +22,20 @@ const VisualStories = () => {
 
   const onUpload = async () => {
     try {
-      // Step 1: Upload Image
-      let formData = new FormData();
-      formData.append("file", img, img.name);
+      // Step 1: Upload Images
+      const imageResponses = await Promise.all(
+        images.map(async (image) => {
+          let formData = new FormData();
+          formData.append("file", image, image.name);
 
-      const imageResponse = await axios.post(`${API_URL}/image`, formData);
+          return await axios.post(`${API_URL}/image`, formData);
+        })
+      );
 
       // Step 2: Create Story
       const storyResponse = await axios.post(`${API_URL}/story`, {
         title,
-        image: imageResponse.data.image,
+        images: imageResponses.map((response) => response.data.image),
       });
 
       // Additional logic if needed after successful upload
@@ -41,6 +45,7 @@ const VisualStories = () => {
       // Handle error
     }
   };
+
   return (
     <>
       <h1
@@ -63,10 +68,11 @@ const VisualStories = () => {
                   name="file"
                   id="file-name"
                   onChange={(e) => {
-                    setImg(e.target.files[0]);
+                    setImages([...images, ...e.target.files]);
                   }}
                   style={{ display: "none" }}
                   hidden={true}
+                  multiple // Allow multiple file selection
                 />
                 <div
                   onClick={() => {
@@ -80,7 +86,7 @@ const VisualStories = () => {
                     marginBottom: 10,
                   }}
                 >
-                  {img == null ? (
+                  {images.length === 0 ? (
                     <div
                       style={{
                         height: "100%",
@@ -92,17 +98,21 @@ const VisualStories = () => {
                         color: "rgba(0,0,0,0.5)",
                       }}
                     >
-                      Upload image here
+                      Upload image(s) here
                     </div>
                   ) : (
-                    <img
-                      style={{
-                        width: "auto",
-                        height: "200px",
-                        borderRadius: "10px",
-                      }}
-                      src={URL.createObjectURL(img)}
-                    />
+                    images.map((image, index) => (
+                      <img
+                        key={index}
+                        style={{
+                          width: "auto",
+                          height: "100%",
+                          borderRadius: "10px",
+                          marginRight: "5px",
+                        }}
+                        src={URL.createObjectURL(image)}
+                      />
+                    ))
                   )}
                 </div>
               </Col>

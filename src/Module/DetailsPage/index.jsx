@@ -117,7 +117,11 @@ const DetailsPage = () => {
           <div className="details-page-top-items">
             <div className="details-page-top-item1">
               <FaUser style={{ marginRight: "10px" }} />
-              {data?.publishBy}
+              {data?.publishBy
+                ? data?.publishBy.replace(/\d+/g, "").split("@")[0]
+                : "Admin"}
+
+              {/* {data?.publishBy} */}
               {console.log(data?.publishBy)}
             </div>
             <div className="details-page-top-item2">

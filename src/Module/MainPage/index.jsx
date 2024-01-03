@@ -29,6 +29,8 @@ import slider from "../../assets/slider (2).png";
 
 const MainPage = () => {
   const [sliderItem, setSliderItem] = useState(0);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [imag1, setimag1] = useState();
   const [showItem, setShowItem] = useState(true);
   const [userData, setUserData] = useState([]);
@@ -51,6 +53,8 @@ const MainPage = () => {
   const [pollOptions, setPollOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   const [stories, setStories] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedTitle, setSelectedTitle] = useState("");
 
   useEffect(() => {
     // Fetch stories when the component mounts
@@ -65,6 +69,13 @@ const MainPage = () => {
 
     fetchStories();
   }, []);
+
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
 
   useEffect(() => {
     axios
@@ -666,22 +677,74 @@ const MainPage = () => {
                   stories.length > 0 &&
                   stories.map((story) => (
                     <Col span={8} key={story._id}>
-                      <Card
-                        hoverable
-                        style={{ marginBottom: 16, flex: 1 }}
-                        cover={<img alt={story.title} src={story.image} />}
+                      <div
+                        onClick={() => {
+                          setSelectedImages(story?.images);
+                          setSelectedTitle(story?.title); // Set the selected title
+                          setIsModalVisible(true);
+                        }}
                       >
-                        <Meta
-                          title={story.title}
-                          description="www.instagram.com"
-                        />
-                      </Card>
+                        <Card
+                          hoverable
+                          style={{
+                            marginBottom: 16,
+                            flex: 1,
+                            width: "250px",
+                            height: "420px",
+                          }}
+                        >
+                          <img
+                            style={{
+                              width: "200px",
+                              height: "300px",
+                              objectFit: "fill",
+                            }}
+                            alt={story.title}
+                            src={story.images[0]}
+                          />
+                          <Meta
+                            title={story.title}
+                            description="www.instagram.com"
+                          />
+                        </Card>
+                      </div>
                     </Col>
                   ))}
+                <Modal
+                  title="Stories"
+                  visible={isModalVisible}
+                  onCancel={() => setIsModalVisible(false)}
+                  footer={null}
+                >
+                  <Slider {...sliderSettings}>
+                    {selectedImages &&
+                      selectedImages.map((image, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <img
+                            style={{
+                              width: "400px",
+                              height: "400px",
+                            }}
+                            src={image}
+                            alt={`Image ${index}`}
+                          />
+                          {/* Display the dynamically selected title */}
+                          <div style={{ textAlign: "center" }}>
+                            {selectedTitle}
+                          </div>
+                        </div>
+                      ))}
+                  </Slider>
+                </Modal>
               </div>
             </div>
           </div>
-          {/* ... (your existing JSX code) */}
         </div>
 
         <div className="main-video-gallery-main-container container2 container3">
