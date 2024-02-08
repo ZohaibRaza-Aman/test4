@@ -12,6 +12,7 @@ import { FaRegComment } from "react-icons/fa";
 import DetailsNewsCard from "../../Components/DetailsPage/NewsCard";
 import DetailsVideoCard from "../../Components/DetailsPage/VideoCard";
 import AdCard from "../../Components/Global/AdCard";
+import { TwitterEmbed, InstagramEmbed } from "react-social-media-embed";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   EmailIcon,
@@ -27,6 +28,7 @@ import { Col, Input, Modal, Row, Spin, message } from "antd";
 import { Loading } from "../../Context";
 import { useContext } from "react";
 import { API_URL } from "../../../API";
+import StoriesCard from "../../Components/MainPage/StoriesCard";
 const { TextArea } = Input;
 const DetailsPage = () => {
   const { pathname, search } = useLocation();
@@ -41,11 +43,35 @@ const DetailsPage = () => {
   const [Email, setEmail] = useState("");
   const [comment, setComment] = useState("");
   const [userData, setUserData] = useState([]);
+  const [breakingNews, setbreakingNews] = useState([]);
+  const [latestestnews, setLatestnews] = useState([]);
+  const [socialedia, setsocialedia] = useState([]);
   const { t } = useTranslation();
   const navigation = useNavigate();
   const { loading, setLoading, effect } = useContext(Loading);
   const query = new URLSearchParams(search);
   console.log(query.get("id"));
+  console.log(data);
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/sociallink`);
+      setsocialedia(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // console.log(socialedia);
+
   useEffect(() => {
     console.log("heee");
     axios
@@ -65,7 +91,32 @@ const DetailsPage = () => {
         setLoading(false);
       });
   }, []);
-  console.log(article);
+  useEffect(() => {
+    axios
+      .get(
+        `${API_URL}/article?pagenation=true&limit=6&type=img&newsType=${article?.data[0]?.newsType}&status=online`
+      )
+      .then((data) => {
+        setbreakingNews(data?.data);
+        console.log(data);
+      })
+      .catch(() => {});
+  }, []);
+  // console.log(breakingNews);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${API_URL}/article?pagenation=true&type=img&newsType=topStories&status=online&limit=6`
+      )
+      .then((data) => {
+        setLatestnews(data?.data);
+        console.log(data);
+      })
+      .catch(() => {});
+  }, []);
+  console.log(latestestnews,"letestnews");
+  
   const [data2, setData2] = useState([]);
   useEffect(() => {
     axios.get(`${API_URL}/comment?id=${query.get("id")}`).then((res) => {
@@ -83,6 +134,11 @@ const DetailsPage = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
   const onAdd = () => {
+    if (!validateEmail(Email)) {
+      message.error("Please enter a valid email address");
+      return;
+    }
+
     setLoading2(true);
     console.log(
       { email: Email, name, message: comment, postId: data._id },
@@ -108,7 +164,8 @@ const DetailsPage = () => {
         message.success("Successfully Added");
       });
   };
-  console.log(data?.publishBy);
+
+  // console.log(data?.publishBy);
   return (
     <>
       <div className="detail-page-top-container container2 container3">
@@ -126,7 +183,13 @@ const DetailsPage = () => {
             </div>
             <div className="details-page-top-item2">
               <AiOutlineCalendar size={22} style={{ marginRight: "10px" }} />
-              12|08|2023 12:15
+              {new Date(article?.data[0]?.updatedAt).toLocaleString("en-GB", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </div>
             <div className="details-page-top-item3">
               {isFav ? (
@@ -190,10 +253,35 @@ const DetailsPage = () => {
             <div className="details-main-related-new-area-heading">
               {t("rn")}
             </div>
-            <div className="details-main-related-new-area-cards">
+            <div
+              className="details-main-related-new-area-cards"
+              style={{ marginTop: 20, marginBottom: 20 }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                {/* {socialedia
+                  .filter((item) => item.status === "active")
+                  .slice(0, 3)
+                  .map((item) => (
+                    <div
+                      key={item?._id}
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        marginRight: 5,
+                      }}
+                    >
+                      {item?.platform === "Instagram" ? (
+                        <InstagramEmbed url={item?.link} width={328}  height={310}/>
+                      ) : (
+                        <TwitterEmbed url={item?.link} width={325} height={310}/>
+                      )}
+                    </div>
+                  ))} */}
+              </div>
+
+              {/* <DetailsNewsCard />
               <DetailsNewsCard />
-              <DetailsNewsCard />
-              <DetailsNewsCard />
+              <DetailsNewsCard /> */}
             </div>
           </div>
           <div className="detalis-page-commment-area1">
@@ -210,9 +298,7 @@ const DetailsPage = () => {
                   <FaRegComment style={{ marginRight: "10px" }} /> Comment
                 </div>
               </div>
-            ) : (
-              <></>
-            )}
+            ) : null}
             {data2.map(({ name, message }) => {
               return (
                 <div style={{ display: "flex", marginTop: "10px" }}>
@@ -271,20 +357,40 @@ const DetailsPage = () => {
             <div className="details-page-related-news-heading">{t("rn")}</div>
           </div>
           <div className="detail-page-relate-new-cards">
+            {/* <RelatedNewsCard /> */}
+            {/* <RelatedNewsCard />
             <RelatedNewsCard />
             <RelatedNewsCard />
             <RelatedNewsCard />
-            <RelatedNewsCard />
-            <RelatedNewsCard />
-            <RelatedNewsCard />
+            <RelatedNewsCard /> */}
+            {breakingNews?.map((data, index) => {
+              let title = data.title?.split(" ").join("-");
+
+              if (title) {
+                return (
+                  <StoriesCard
+                    data={data}
+                    key={index}
+                    OnPress={() =>
+                      navigation(`/details/${title}?id=${data?._id}`)
+                    }
+                    image={data?.image}
+                    text={data?.title}
+                  />
+                );
+              } else {
+                console.error("Title is undefined or null for data:", data);
+                return null;
+              }
+            })}
           </div>
           <div className="details-page-latest-news">
             <div className="details-main-related-new-area-heading">
               {t("ln")}
             </div>
             <div className="details-page-video-cards">
-              <DetailsVideoCard />
-              <DetailsVideoCard />
+              <DetailsVideoCard newsContent={latestestnews} />
+              {/* <DetailsVideoCard /> */}
             </div>
           </div>
           <div className="details-main-ad-cards">

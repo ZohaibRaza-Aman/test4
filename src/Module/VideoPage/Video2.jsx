@@ -22,7 +22,8 @@ import axios from "axios";
 import { API_URL } from "../../../API";
 
 const VideoPage2 = () => {
-  const { pathname,search } = useLocation();
+  const { pathname,search ,state} = useLocation();
+  console.log('state======', state)
   const { t } = useTranslation();
   const query = new URLSearchParams(search);
   const [data, setData] = useState(null);
@@ -105,8 +106,7 @@ const VideoPage2 = () => {
             {t("ln")}
           </div>
           <div className="details-page-video-cards">
-            <DetailsVideoCard />
-            <DetailsVideoCard />
+          <DetailsVideoCard newsContent={state.newsContent} />   {/* pass video data with state */}
           </div>
         </div>
         <div className="itempage-main-sub-news-area">
