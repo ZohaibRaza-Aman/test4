@@ -394,7 +394,7 @@ const DetailsPage = () => {
             </div>
           </div>
           <div className="details-main-ad-cards">
-            <AdCard />
+            <AdCard  />
             <AdCard />
           </div>
         </div>

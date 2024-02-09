@@ -19,6 +19,7 @@ const DetailsVideoCard = (props) => {
         const { image, description, duration, title } = eachNews;
         return (
           <div
+          style={{cursor:'pointer'}}
             key={index}
             className="Detail-video-card-main-box"
             onClick={() => handleCardClick(eachNews)}

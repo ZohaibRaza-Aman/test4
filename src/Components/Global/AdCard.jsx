@@ -1,23 +1,16 @@
-import React from "react";
-import "./style/index.css";
-import img1 from "../../assets/Rectangle 73.png";
+import React from 'react'
+import img from "../../assets/Rectangle 73.png"
+import "./style/index.css"
 
-const AdCard = (props) => {
-  const { img, title, description } = props;
+const AdCard = () => {
   return (
     <div className="ad-card-main-area">
-      <img src={img ? `${img}` : img1} alt="img" />
-      <div className="ad-card-main-area-text">
-        {title}{" "}
-        {description ? (
-          `${description}`
-        ) : (
-          <> New Health Campaign, ‘Ayushman Bhava’ To Reach Out...</>
-        )}{" "}
-        <span className="ad-card-button">Learn More</span>
-      </div>
+        <img src={img} alt="" />
+        <div className="ad-card-main-area-text">
+        New Health Campaign, ‘Ayushman Bhava’ To Reach Out... <span className="ad-card-button">Learn More</span>
+        </div>
     </div>
-  );
-};
+  )
+}
 
-export default AdCard;
+export default AdCard

@@ -183,6 +183,7 @@
 .ad-card-main-area > img {
   width: 100%;
   height: 170px;
+  cursor: pointer;
 }
 .ad-card-main-area-text {
   font-family: Poppins;
