@@ -5,7 +5,7 @@ import "./style/index.css"
 const AdCard = () => {
   return (
     <div className="ad-card-main-area">
-        <img src={img} alt="" />
+        <img src={img} alt="img" />
         <div className="ad-card-main-area-text">
         New Health Campaign, ‘Ayushman Bhava’ To Reach Out... <span className="ad-card-button">Learn More</span>
         </div>
