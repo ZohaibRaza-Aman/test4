@@ -100,6 +100,9 @@ const Footer = () => {
                     arr.push(element);
                   }
                 });
+                console.log('====================================');
+                console.log(arr,"arr");
+                console.log('====================================');
               return (
                 <div className="footer-item-box" key={item._id}>
                   <div
@@ -165,7 +168,7 @@ const Footer = () => {
           </div>
           <div className="footer-main">
             <div className="footer-item-box">
-              <div className="footer-heading">entertainment</div>
+              <div onClick={()=> Navigation('itempage?item=Foreign')} style={{cursor:'pointer'}} className="footer-heading">entertainment</div>
               <div className="footer-items">
                 <div>movies</div>
                 <div>artist </div>
@@ -175,7 +178,7 @@ const Footer = () => {
               </div>
             </div>
             <div className="footer-item-box">
-              <div className="footer-heading">special</div>
+              <div onClick={()=> Navigation('itempage?item=special')} style={{cursor:'pointer'}} className="footer-heading">special</div>
               <div className="footer-items">
                 <div>with us</div>
                 <div>on earth </div>
@@ -185,7 +188,7 @@ const Footer = () => {
               </div>
             </div>
             <div className="footer-item-box">
-              <div className="footer-heading">whether</div>
+              <div onClick={()=> Navigation('itempage?item=whether')} style={{cursor:'pointer'}} className="footer-heading">whether</div>
               <div className="footer-items">
                 <div>environment</div>
                 <div>wind tracker </div>
@@ -195,7 +198,7 @@ const Footer = () => {
               </div>
             </div>
             <div className="footer-item-box">
-              <div className="footer-heading">extra</div>
+              <div onClick={()=> Navigation('itempage?item=extra')} style={{cursor:'pointer'}} className="footer-heading">extra</div>
               <div className="footer-items">
                 <div>designs</div>
                 <div>membership </div>
@@ -205,7 +208,7 @@ const Footer = () => {
               </div>
             </div>
             <div className="footer-item-box">
-              <div className="footer-heading">foreign</div>
+              <div onClick={()=> Navigation('itempage?item=Foreign')} style={{cursor:'pointer'}} className="footer-heading">foreign</div>
               <div className="footer-items">
                 <div>america</div>
                 <div>russia </div>

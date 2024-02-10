@@ -103,6 +103,9 @@ const DetailsPage = () => {
       .catch(() => {});
   }, []);
   // console.log(breakingNews);
+  console.log('====================================');
+  console.log(data,'isdata====================');
+  console.log('====================================');
 
   useEffect(() => {
     axios
@@ -116,6 +119,18 @@ const DetailsPage = () => {
       .catch(() => {});
   }, []);
   console.log(latestestnews,"letestnews");
+
+    useEffect(() => {
+    axios
+      .get(
+        `${API_URL}/article?pagenation=true&type=img&newsType=&status=online`
+      )
+      .then((data1) => {
+        
+        console.log(data1,"====Data");
+      })
+      .catch(() => {});
+  }, []);
   
   const [data2, setData2] = useState([]);
   useEffect(() => {
