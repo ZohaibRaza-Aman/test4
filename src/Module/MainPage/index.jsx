@@ -211,6 +211,15 @@ const MainPage = () => {
       prevIndex === flashnews.length - 1 ? 0 : prevIndex + 1
     );
   };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === flashnews.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 2000); // Change slide every 2 seconds
+  
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, [flashnews]);
 
   return (
     <>
