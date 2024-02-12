@@ -148,6 +148,9 @@ const MainPage = () => {
       })
       .catch(() => {});
   }, []);
+
+
+  
   useEffect(() => {
     axios
       .get(`${API_URL}/article?pagenation=true&limit=4&type=vid`)
@@ -164,6 +167,7 @@ const MainPage = () => {
       })
       .catch(() => {});
   }, []);
+
   useEffect(() => {
     axios
       .get(`${API_URL}/article?id=6524337309c3cf5a3cca172a`)

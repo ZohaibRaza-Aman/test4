@@ -45,6 +45,7 @@ const DetailsPage = () => {
   const [userData, setUserData] = useState([]);
   const [breakingNews, setbreakingNews] = useState([]);
   const [latestestnews, setLatestnews] = useState([]);
+  const [latestestnewsart, setLatestNewsart] = useState([]);
   const [socialedia, setsocialedia] = useState([]);
   const { t } = useTranslation();
   const navigation = useNavigate();
@@ -179,6 +180,15 @@ const DetailsPage = () => {
         message.success("Successfully Added");
       });
   };
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/article?pagenation=true&limit=6&type=img&page=2`)
+      .then((data) => {
+        setLatestNewsart(data.data);
+      })
+      .catch(() => {});
+  }, []);
+  console.log(latestestnewsart,"latestestnewsart===");
 
   // console.log(data?.publishBy);
   return (
@@ -409,8 +419,8 @@ const DetailsPage = () => {
             </div>
           </div>
           <div className="details-main-ad-cards">
-            <AdCard  />
-            <AdCard />
+            <AdCard newsContent={latestestnewsart} />
+            {/* <AdCard /> */}
           </div>
         </div>
         <div className="detalis-page-commment-area2">
